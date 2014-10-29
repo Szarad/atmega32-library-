@@ -1,0 +1,38 @@
+.include "m32def.inc"
+;inicjowanie zmiennych
+.EQU tabdl= 300;długość tablic
+.DSEG
+.ORG 0x01FF
+tab1: .BYTE tabdl
+tab2: .BYTE tabdl
+.CSEG ;segment kodu
+LDI R18, HIGH (RAMEND)
+OUT SPH, R18
+LDI R19, LOW (RAMEND)
+OUT SPL, R19
+
+ldi ZL,low(tab1) ;Z wskazuje na tablice 1 (tab1)
+ldi ZH,high(tab1)
+ldi YL,low(tab2) ;Y wskazuje na tablice 2 (tab2)
+ldi YH,high(tab2)
+ldi XL,low(tabdl) ;do X będzie ładowany wynik dodawania pojedynczych bajtów
+ldi XH,high(tabdl)
+CALL DODAJ
+
+START:
+JMP START
+
+DODAJ:
+PUSH R16   
+PUSH R17
+CLC
+loop:
+LD R16,Z+ ;rejestr pomocniczy przy dodawaniu, laduje bajt z pierwszej tablicy wskazywany przez Z w pamieci, potem Z bedzie wskazywac na kolejny element tablicy
+LD R17,Y ;rejestr pomocniczy, ladowanie bajtu z drugiej tablicy
+ADC R16, R17
+st y+, r16
+SBIW x, 1
+brne loop ;jesli dojdziesz do konca tablicy, to koncz program
+POP R17
+POP R16
+RET
