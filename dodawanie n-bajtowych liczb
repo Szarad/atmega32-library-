@@ -1,0 +1,31 @@
+.include "m32def.inc"
+;inicjowanie zmiennych
+.EQU tabdl=16 ;długość tablic
+.def dlugosc = R19 	;licznik petli
+.DSEG
+.ORG 0x01FF
+tab1: .BYTE tabdl
+tab2: .BYTE tabdl
+CSEG ;segment kodu
+ldi dlugosc, tabdl 
+ldi ZL,low(tab1<<1) 	;Z wskazuje na tablice 1 (tab1)
+ldi ZH,high(tab1<<1)
+ldi YL,low(tab2<<1) ;Y wskazuje na tablice 2 (tab2)
+ldi YH,high(tab2<<1)
+ldi XL,low(tab2<<1)  ;do X będzie ładowany wynik dodawania pojedynczych bajtów
+ldi XH,high(tab2<<1)   
+CLC
+loop:
+LPM R16,Z+ ;rejestr pomocniczy przy dodawaniu, laduje bajt z pierwszej tablicy wskazywany przez Z w pamieci, potem Z bedzie wskazywac na kolejny element tablicy
+MOVW R24,R30 ;przy pomocy rejestrow R25 i R24 robimy swap Z i X
+MOVW R30,R28 ;Z=Y
+LPM R17,Z+   ;rejestr pomocniczy, ladowanie bajtu z drugiej tablicy
+MOVW R28,R30;Y=Z
+MOVW R30, R24;Z=R25:R24
+ADC R16, R17
+ST X+,R16	;do tablicy 2 (tab2) ladowany jest wynik dodawania dwoch bajtow z przeniesieniem z poprzedniej linijki, potem X wskazuje na kolejny element tablicy
+dec dlugosc	;dlugosc--
+tst dlugosc		; sprawdź czy dlugosc jest równa 0
+breq end  		;jesli dojdziesz do konca tablicy, to koncz program
+rjmp loop
+end:
