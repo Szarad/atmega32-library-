@@ -1,7 +1,7 @@
 ;Karolina Bozek, Michal Kimak
 .include "m32def.inc"
 ;inicjowanie zmiennych
-.EQU tabdl= 3 ;długość tablic
+.EQU tabdl= 5 ;długość tablic
 
 .DSEG
 .ORG 0x0060
