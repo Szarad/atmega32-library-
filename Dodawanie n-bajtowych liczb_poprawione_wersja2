@@ -1,0 +1,43 @@
+;Karolina Bozek, Michal Kimak
+.include "m32def.inc"
+;inicjowanie zmiennych
+.EQU tabdl= 3 ;długość tablic
+
+.DSEG
+.ORG 0x0060
+tab1: .BYTE tabdl
+tab2: .BYTE tabdl
+
+.CSEG ;segment kodu
+;zakladamy, ze tablice sa zapisane w formacie little endian
+     ldi ZL,low(tab1)   ;Z wskazuje na tablice 1 (tab1)
+     ldi ZH,high(tab1)
+     ldi YL,low(tab2)   ;Y wskazuje na tablice 2 (tab2)
+     ldi YH,high(tab2)
+     ldi XL,low(tabdl)  ;X-zmienna pomocnicza, która trzyma długosc tablicy
+     ldi XH,high(tabdl)
+     CLC  
+
+loop:
+     LD R16,Z+     ;R16-zmienna pomocnicza, do ktorej ladujemy bajty, ktore bede dodane
+     LD R17,Y      ;R17-analogicznie do R16
+     ADC R16, R17
+     ST Y+, r16    ;zapisywanie wyniku do tablica 2 (tab2)
+     BRCS cset     ;skok do etykiety cset, C=1
+     SBIW X, 1     ;dekrementujemy dlugosc tablicy (XL)
+     clc           ;jesli C nie jest ustawione, wyszczysc C, ustawione w komendzie SBIW
+brne loop          ;jesli dalej sa dane, kontynuj
+rjmp koniec        ;jesli dlugosc tablicy=0, skoncz program
+
+cset:  
+;jesli C ustawione, wyczysc C, odejmij od dlugosci tablicy 1 i ustaw ponownie C
+     clc
+     SBIW X, 1
+     SEC
+brne loop     ;jesli dojdziesz do konca tablicy, to koncz program
+koniec:
+
+;Jezeli po zakonczeniu operacji C=1, w zasadzie powinno sie do nastepnej komorki pamieci wpisac 1, ale w zwiazku z tym, 
+;ze dzialamy na dwoch tablicach o tej samej dlugosci 
+;i z tego co nam sie wydaje zadanie tego nie precyzowalo, wiec nie uwzgledniamy tego (teoretycznie tablica wynikow powinna byc dluzsza o 1 bajt)
+ 
