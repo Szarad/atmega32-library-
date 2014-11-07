@@ -1,4 +1,5 @@
 ;Karolina Bozek, Michal Kimak
+
 .include "m32def.inc"
 ;inicjowanie zmiennych
 .EQU tabdl= 5 ;długość tablic
