@@ -34,7 +34,7 @@ cset:
      clc
      SBIW X, 1
      SEC
-brne loop     ;jesli dojdziesz do konca tablicy, to koncz program
+brne loop          ;jesli dojdziesz do konca tablicy, to koncz program
 koniec:
 
 ;Jezeli po zakonczeniu operacji C=1, w zasadzie powinno sie do nastepnej komorki pamieci wpisac 1, ale w zwiazku z tym, 
