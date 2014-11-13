@@ -1,11 +1,14 @@
 ;Karolina Bozek, Michal Kimak
+
 .include "m32def.inc"
 ;inicjowanie zmiennych
 .EQU tabdl= 3 ;długość tablic
+
 .DSEG
 .ORG 0x0060
 tab1: .BYTE tabdl
 tab2: .BYTE tabdl
+
 .CSEG ;segment kodu
     LDI R18, HIGH (RAMEND) ;R18, R19-rejestry pomocnicze, zawierajace adres stosu
     OUT SPH, R18           ;inicjalizacja stosu
