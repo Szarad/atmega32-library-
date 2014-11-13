@@ -1,0 +1,48 @@
+;Karolina Bozek, Michal Kimak
+.include "m32def.inc"
+;inicjowanie zmiennych
+.EQU tabdl= 3 ;długość tablic
+.DSEG
+.ORG 0x0060
+tab1: .BYTE tabdl
+tab2: .BYTE tabdl
+.CSEG ;segment kodu
+    LDI R18, HIGH (RAMEND) ;R18, R19-rejestry pomocnicze, zawierajace adres stosu
+    OUT SPH, R18           ;inicjalizacja stosu
+    LDI R19, LOW (RAMEND)  
+    OUT SPL, R19           
+    ldi ZL,low(tab1)       ;Z wskazuje na tablice 1 (tab1)
+    ldi ZH,high(tab1)
+    ldi YL,low(tab2)       ;Y wskazuje na tablice 2 (tab2)
+    ldi YH,high(tab2)
+    ldi XL,low(tabdl)      ;do X będzie ładowany wynik dodawania pojedynczych bajtów
+    ldi XH,high(tabdl)
+    
+CALL DODAJ
+
+START:      ;zakonczenie programu
+JMP START
+
+;procedura
+DODAJ: ;procedura dodawania wielobajtowych liczb
+    PUSH R16
+    PUSH R17
+    CLT
+loop:
+    LD R16,Z+   ;R16-zmienna pomocnicza, do ktorej ladujemy bajty, ktore beda dodane
+    LD R17,Y    ;R17-analogicznie do R16
+    clc         ;zerowanie flagi C, flaga C jest zapamietywana we fladze T
+    brtc adder  ;jesli flaga T = 0 to skok do etykiety adder
+    sec         ;ustawienie flagi C
+adder:
+    ADC R16, R17
+    clt         ;zerowanie flagi T, flaga C jest zapamietywana we fladze T
+    brcc store  ;skok do etykiety store - flaga C=0
+    set         ;ustawienie flagi T
+store:
+    ST Y+, r16  ;zapisywanie wyniku do tablicy 2 (tab2)
+    SBIW X, 1   ;dekrementujemy dlugosc tablicy (XL)
+    brne loop   ;jesli dojdziesz do konca tablicy, to koncz program
+    POP R17
+    POP R16
+    RET         ;koniec procedury
