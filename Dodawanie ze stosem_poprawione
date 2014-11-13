@@ -27,7 +27,7 @@ START:      ;zakonczenie programu
 JMP START
 
 ;procedura
-DODAJ: ;procedura dodawania wielobajtowych liczb
+DODAJ:      ;procedura dodawania wielobajtowych liczb
     PUSH R16
     PUSH R17
     CLT
