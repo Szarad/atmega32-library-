@@ -1,3 +1,4 @@
+//Karolina Bozek, Michal Kimak, Bartosz Lasota
 #define F_CPU 1000000UL //czestotliwosc taktowania AVR
 
 #include <avr/io.h>
@@ -29,7 +30,7 @@ void WatchdogTask(void *params);
 
 //funkcje
 //przerwanie TIMER0 OVF, przepelnienie
-SIGNAL(SIG_OVERFLOW0) {
+ISR(TIMER0_OVF_vect) {
   
   TCNT0 = TIMER0_PERIOD_1MS; //poczatkowa wartosc licznika T0, tak aby bylo przepelnienie co 1ms
   schedule(); //wywolanie
